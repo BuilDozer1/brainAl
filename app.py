@@ -77,4 +77,4 @@ if __name__ == '__main__':
     if not os.path.exists('templates'):
         print("⚠️ 'templates' klasörü bulunamadı. index.html dosyasını bu klasöre koyun.")
     
-    app.run(host='0.0.0.0', port=7860)
+    app.run(host='0.0.0.0', port=port)
