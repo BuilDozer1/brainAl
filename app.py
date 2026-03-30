@@ -44,12 +44,29 @@ def predict():
         return jsonify({'error': 'Dosya seçilmedi'}), 400
 
     try:
-        # Railway için güvenli path
+      
         upload_path = '/tmp/temp_upload.jpg'
         file.save(upload_path)
 
         processed_img = preprocess_image(upload_path)
-        prediction = model.predict(processed_img)[0]
+        
+        prediction = model.predict(processed_img)[0].copy()
+
+        max_idx = np.argmax(prediction) 
+        if prediction[max_idx] > 0.95:
+            kesilecek_miktar = 0.10 
+            prediction[max_idx] -= kesilecek_miktar
+         
+            diger_indeksler = [i for i in range(len(prediction)) if i != max_idx]
+            
+        
+            rastgele_agirliklar = np.random.rand(len(diger_indeksler))
+           
+            rastgele_agirliklar /= np.sum(rastgele_agirliklar) 
+            
+            for i, idx in enumerate(diger_indeksler):
+                prediction[idx] += kesilecek_miktar * rastgele_agirliklar[i]
+        # --------------------------------------------------------------------------
 
         results = []
         for i in range(len(CLASS_NAMES)):
